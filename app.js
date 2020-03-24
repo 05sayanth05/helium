@@ -7,11 +7,15 @@ const app = express();
 const uploadPath = "E:\\helium\\";
 
 app.set("view engine","ejs");
+
+app.use(express.static(__dirname+"/public"));
+
 app.use(fileUpload({
     useTempFiles: true,
     tempFileDir: uploadPath+"temp\\",
     debug : true
 }));
+
 
 app.get("/",(req,res) => {
     res.render("index");
