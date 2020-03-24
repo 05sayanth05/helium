@@ -8,6 +8,8 @@ const uploadPath = "E:\\helium\\";
 
 app.set("view engine","ejs");
 app.use(fileUpload({
+    useTempFiles: true,
+    tempFileDir: uploadPath+"temp\\",
     debug : true
 }));
 
@@ -37,6 +39,7 @@ app.listen(3000,() => {
 
     if(!fs.existsSync(uploadPath)) {
         fs.mkdirSync(uploadPath);
+        fs.mkdirSync(uploadPath+"temp\\");
         console.log("directory created | path: "+uploadPath);
     }
 
