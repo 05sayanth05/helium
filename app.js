@@ -1,5 +1,6 @@
 const express = require("express");
 const fileUpload = require("express-fileupload");
+const bodyParser = require("body-parser");
 const fs = require("fs");
 
 const app = express();
@@ -7,6 +8,8 @@ const app = express();
 const uploadPath = "E:\\helium\\";
 
 app.set("view engine","ejs");
+
+app.use(bodyParser.urlencoded({extended: true}));
 
 app.use(express.static(__dirname+"/public"));
 
@@ -26,9 +29,14 @@ app.get("/upload",(req,res) => {
 });
 
 app.post("/upload",(req,res) => {
-    let file = req.files.f;
+    let file = req.files.fname;
 
-    file.mv(uploadPath+file.name, (err) => {
+    if(!fs.existsSync(uploadPath + req.body.username + "\\")) {
+        fs.mkdirSync(uploadPath + req.body.username + "\\",{recursive: true});
+        console.log("dir created at: " + uploadPath + req.body.username + "\\");
+    }
+
+    file.mv(uploadPath + req.body.username + "\\" + file.name, (err) => {
         if(err) {
             console.log(err);
             return res.status(500).send("failed to move");
@@ -42,8 +50,8 @@ app.listen(3000,() => {
     console.log("server started at port 3000");
 
     if(!fs.existsSync(uploadPath)) {
-        fs.mkdirSync(uploadPath);
-        fs.mkdirSync(uploadPath+"temp\\");
+        fs.mkdirSync(uploadPath,{recursive: true}); // recursive : if neccessary it will create parent directories
+        fs.mkdirSync(uploadPath+"temp\\",{recursive: true});
         console.log("directory created | path: "+uploadPath);
     }
 
